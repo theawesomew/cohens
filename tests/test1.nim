@@ -12,8 +12,7 @@ import cohens/crypto
 test "A message encrypted by Cohen's is decrypted correctly":
   var k = 10
   var plaintext = "Hello, Nim!"
-  var privateKey = generatePrivateKey()
-  var publicKey = generatePublicKey(privateKey, k)
+  var (privateKey, publicKey) = generatePublicPrivateKeyPair(k)
   var ciphertext: seq[int64] = encrypt(plaintext.toSeq().mapIt(it.ord.byte), publicKey)
   var decryptedMessage: seq[byte] = decrypt(ciphertext, privateKey)
   check(decryptedMessage.mapIt(it.char).join("") == plaintext)
@@ -21,9 +20,8 @@ test "A message encrypted by Cohen's is decrypted correctly":
 test "Decryption with wrong private key fails":
   var k = 10
   var plaintext = "Hello, Nim!"
-  var privateKey1 = generatePrivateKey()
-  var privateKey2 = generatePrivateKey()
-  var publicKey = generatePublicKey(privateKey1, k)
+  var (_, publicKey) = generatePublicPrivateKeyPair(k)
+  var (privateKey2, _) = generatePublicPrivateKeyPair(k)
   var ciphertext: seq[int64] = encrypt(plaintext.toSeq().mapIt(it.ord.byte), publicKey)
   var decryptedMessage: seq[byte] = decrypt(ciphertext, privateKey2)
   check(decryptedMessage.mapIt(it.char).join("") != plaintext)

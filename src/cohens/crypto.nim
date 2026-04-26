@@ -6,16 +6,21 @@ func `modu`(a, b: int64): int64 =
   let r = a mod b
   return if r < 0: r + b else: r
 
-proc generatePrivateKey*(): int64 =
+proc generatePrivateKey(): int64 =
   # Generate a random private key (a large integer)
   return rand(1_000_000).int64
 
-proc generatePublicKey*(p: int64, k: int64): seq[int64] =
+proc generatePublicKey(p: int64, k: int64): seq[int64] =
   var r: Rand = initRand()
   let uValues: seq[int64] = ((0.int64)..k).toSeq().map(x => r.rand(-1000..1000).int64)
   let vValues: seq[int64] = ((0.int64)..k).toSeq().map(x => r.rand(0..int(ceil(p/(2*k)))).int64)
 
   return zip(uValues, vValues).mapIt(it[0] * p + it[1])
+
+proc generatePublicPrivateKeyPair* (k: int64): (int64, seq[int64]) =
+  let privateKey = generatePrivateKey()
+  let publicKey = generatePublicKey(privateKey, k)
+  return (privateKey, publicKey)
 
 proc encrypt*(message: seq[byte], publicKey: var seq[int64]): seq[int64] =
   result = newSeq[int64](message.len * 8)
