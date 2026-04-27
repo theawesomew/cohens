@@ -51,9 +51,9 @@ func deserializeInt64Seq(data: string, offset: int, count: int): seq[int64] =
 
 func serializePrivateKey*(k, b, p: int64, publicKey: seq[int64]): string =
   var buf = newStringOfCap(24 + publicKey.len * 8)
-  for b in int64ToBytesBE(k): buf.add(char(b))
-  for b in int64ToBytesBE(b): buf.add(char(b))
-  for b in int64ToBytesBE(p): buf.add(char(b))
+  for byt in int64ToBytesBE(k): buf.add(char(byt))
+  for byt in int64ToBytesBE(b): buf.add(char(byt))
+  for byt in int64ToBytesBE(p): buf.add(char(byt))
   buf.add(serializeInt64Seq(publicKey))
   return buf
 
@@ -72,7 +72,7 @@ func deserializePrivateKey*(data: string): tuple[k, b, p: int64, publicKey: seq[
 
 func serializePublicKey*(k: int64, publicKey: seq[int64]): string =
   var buf = newStringOfCap(8 + publicKey.len * 8)
-  for b in int64ToBytesBE(k): buf.add(char(b))
+  for byt in int64ToBytesBE(k): buf.add(char(byt))
   buf.add(serializeInt64Seq(publicKey))
   return buf
 
